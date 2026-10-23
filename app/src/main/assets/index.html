@@ -27,8 +27,49 @@
 <nav class="nav"><button class="active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ni">⌂</span><span>Início</span></button><button data-page="movements" onclick="navigate('movements')"><span class="ni">↕</span><span>Movimentações</span></button><button class="plus" data-page="new" onclick="navigate('new')"><span class="ni">+</span><span>Novo</span></button><button data-page="analytics" onclick="navigate('analytics')"><span class="ni">◫</span><span>Análises</span></button><button data-page="applications" onclick="navigate('applications')"><span class="ni">▦</span><span>Aplicações</span></button></nav>
 <div id="toast" style="display:none;position:fixed;bottom:95px;left:20px;right:20px;max-width:520px;margin:auto;background:#202d42;border:1px solid #3a506e;padding:13px 16px;border-radius:14px;font-size:12px;z-index:20"></div>
 </main><script>
-const labels={investments:['Investimentos','Carteira, ativos e comparação de opções.'],simulations:['Simulação $$$','Calculadoras, cenários e comparação de decisões.'],payments:['Pagamentos','Contas, parcelas, dívidas e vencimentos.'],projects:['Projetos','Orçamento, execução e acompanhamento de projetos.'],allocation:['Alocação','Distribuição percentual do excedente disponível.'],goals:['Metas e reservas','Objetivos, prazos e progresso financeiro.'],categories:['Categorias','Organização de categorias e orçamento.'],kingdom:['Obra do Reino','Compromissos, estudos e projetos de serviço.'],openfinance:['Open Finance','Conexões bancárias serão integradas por último.'],reports:['Relatórios','Exportação e impressão em etapa futura.'],calculator:['Calculadora','Calculadora rápida será implementada em etapa futura.'],settings:['Configurações','Preferências e ajustes do aplicativo.']};
-function navigate(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));let el=document.getElementById('page-'+p);if(el){el.classList.add('active')}else{document.getElementById('page-detail').classList.add('active');document.getElementById('detailTitle').textContent=(labels[p]||['Área'])[0];document.getElementById('detailSub').textContent=(labels[p]||['','Área em preparação'])[1];}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='applications')));window.scrollTo(0,0)}
+const labels={
+investments:['Investimentos','Carteira, ativos, comparativos e evolução patrimonial.'],
+simulations:['Simulação $</script></body></html>,'Simule cenários antes de tomar decisões financeiras.'],
+payments:['Pagamentos e dívidas','Contas, parcelas, empréstimos e vencimentos.'],
+projects:['Projetos','Orçamentos, andamento e despesas vinculadas.'],
+allocation:['Alocação percentual','Distribua o excedente entre reservas, metas e projetos.'],
+goals:['Metas e reservas','Objetivos, valores-alvo, prazos e progresso.'],
+categories:['Categorias e orçamento','Organize categorias e compare planejado versus realizado.'],
+kingdom:['Obra do Reino','Leituras, estudos, compromissos e projetos de serviço.'],
+openfinance:['Open Finance','Integração bancária planejada para etapa posterior.'],
+reports:['Relatórios e exportações','Relatórios financeiros e exportação PDF/CSV.'],
+calculator:['Calculadora rápida','Faça cálculos sem sair do fluxo de trabalho.'],
+settings:['Configurações','Preferências, privacidade, armazenamento e aparência.']};
+const templates={
+investments:[['Visão da carteira','R$ 0,00','Patrimônio investido demonstrativo'],['CDB / RDB','Renda fixa'],['LCI / LCA','Renda fixa'],['Tesouro Direto','Títulos públicos'],['Criptoativos','Alto risco'],['Consórcio e imóveis','Outros ativos']],
+simulations:[['Investimentos','Compare retorno bruto, líquido e real'],['À vista ou parcelado','Compare custo total e valor do dinheiro no tempo'],['Financiamento','Taxas, parcelas e custo efetivo'],['Consórcio','Prazo, taxa e custo estimado'],['Inflação / IPCA','Atualização por índice oficial quando disponível'],['Radar de risco','Premissas, riscos e limitações']],
+payments:[['Próximos vencimentos','Nenhuma conta real cadastrada'],['Dívidas e empréstimos','Saldo devedor e pagamentos'],['Parcelas','Cronograma de obrigações'],['Histórico de pagamentos','Registros vinculados sem duplicação']],
+projects:[['Orçamento total','R$ 0,00'],['Total realizado','R$ 0,00'],['Progresso financeiro','Separado do andamento físico'],['Projetos e obras','Crie projetos e vincule movimentações']],
+allocation:[['Excedente disponível','Base do cálculo'],['Reserva','Percentual configurável'],['Metas','Percentual configurável'],['Projetos','Percentual configurável'],['Validar distribuição','Alertar se percentuais ultrapassarem 100%']],
+goals:[['Reserva de emergência','Valor-alvo e prazo'],['Metas financeiras','Progresso e contribuições'],['Prazo e prioridade','Acompanhe o que falta'],['Regra de contabilização','Não contar valores reservados duas vezes']],
+categories:[['Casa','Orçamento e realizado'],['Compras','Orçamento e realizado'],['Alimentos','Orçamento e realizado'],['Investimentos','Orçamento e realizado'],['Saúde','Orçamento e realizado'],['Projetos · Metas · Reserva','Categorias disponíveis'],['Obra do Reino','Categoria específica']],
+kingdom:[['Leituras bíblicas','Planejamento e acompanhamento'],['Estudos e reflexões','Anotações pessoais'],['Compromissos','Agenda e atividades'],['Projetos de serviço','Vínculo financeiro opcional, sem duplicar lançamentos']],
+openfinance:[['Status da conexão','Não conectado'],['Instituições prioritárias','Nubank · PagBank'],['Provedor planejado','Pluggy'],['Segurança','Credenciais mantidas fora do APK'],['Autorização','Só exibir conexão após confirmação real']],
+reports:[['Resumo financeiro','Período e filtros'],['Movimentações','Lista para exportação'],['Exportar PDF','Será ativado na etapa funcional'],['Exportar CSV','Será ativado na etapa funcional']],
+calculator:[['Calculadora','Operações básicas'],['Aplicar resultado','Somente com ação explícita'],['Teclado','Evitar abertura automática desnecessária']],
+settings:[['Aparência','Tema escuro premium'],['Privacidade','Controles e informações'],['Dados locais','Não apagar dados automaticamente'],['Sobre o aplicativo','Próspera + · Android']]
+};
+function navigate(p){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ let el=document.getElementById('page-'+p);
+ if(el){el.classList.add('active')}
+ else {
+  const d=document.getElementById('page-detail'); d.classList.add('active');
+  const info=labels[p]||['Área','Área em preparação'];
+  document.getElementById('detailTitle').textContent=info[0];
+  document.getElementById('detailSub').textContent=info[1];
+  const body=d.querySelector('.section');
+  const cards=(templates[p]||[['Área em preparação','Os detalhes serão implementados na etapa funcional.']]).map((x,i)=>'<div class="rowcard"><div class="rowicon">'+(['◈','◎','▦','∿','◇'][i%5])+'</div><div class="rowmain"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div><span style="color:var(--muted)">›</span></div>').join('');
+  body.innerHTML=cards+'<div class="emptyhint">Estrutura visual demonstrativa. Nenhuma informação financeira real foi importada. As funções serão implementadas e testadas por módulo; Open Finance fica para o final.</div><button class="primary" onclick="showToast(\'Esta função será ativada na etapa de implementação funcional.\')">Adicionar / configurar</button>';
+ }
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
+ window.scrollTo(0,0)
+}
 function showToast(t){let e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2800)}
 let hiddenBalance=false;function toggleBalance(){hiddenBalance=!hiddenBalance;document.getElementById('balanceAmount').textContent=hiddenBalance?'••••••••':'R$ 12.845,90'}
 document.getElementById('movementRows').innerHTML=document.getElementById('recentRows').innerHTML;
