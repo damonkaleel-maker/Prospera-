@@ -121,6 +121,11 @@ body.dashboard-mode{overscroll-behavior-y:auto}
 .alloc-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:5px 0 10px}
 .alloc-mode-btn{min-height:38px;border:1px solid #244765;border-radius:10px;background:#071326;color:#aeb9ca;font-size:17px;font-weight:800}
 .alloc-mode-btn.active,.alloc-mode-btn[aria-pressed="true"]{border-color:#28d8f0;background:#0d3047;color:#75eaff;box-shadow:inset 0 0 0 1px #28d8f033}
+
+/* Feedback de toque nos quatro atalhos inferiores do painel */
+.quick button{transition:transform .12s,border-color .12s,background .12s,box-shadow .12s}
+.quick button:active,.quick button:focus-visible{border-color:var(--cyan);background:#0d3047;box-shadow:0 0 0 1px #28d8f055,0 0 14px #168dff22;outline:none;transform:scale(.97)}
+.quick button:active i,.quick button:focus-visible i{background:#168dff35;color:#75eaff;box-shadow:0 0 12px #168dff35}
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
