@@ -161,6 +161,59 @@ body.dashboard-mode{overscroll-behavior-y:auto}
 .allocation-premium .alloc-range::-moz-range-progress{height:2px!important;border:0!important;background:#FFE04B!important}
 .allocation-premium .alloc-range::-moz-range-thumb{width:9px!important;height:9px!important;border:0!important;border-radius:50%;background:#FFF1A6!important;box-shadow:0 0 4px #FFE04B88!important}
 
+
+/* Refinamento solicitado: painel ocupa a tela, rolagem natural e trilho neon uniforme */
+.entry-overlay{
+  inset:0!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important;
+}
+.entry-window{
+  width:100%!important;height:100dvh!important;max-height:100dvh!important;
+  max-width:none!important;border-radius:0!important;border-left:0!important;border-right:0!important;
+  padding:18px 16px calc(22px + env(safe-area-inset-bottom))!important;
+  overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;
+}
+.allocation-premium{padding:12px!important;border-radius:16px!important}
+.allocation-premium .alloc-row{padding:7px 0!important;border-bottom:1px solid #3d3a2a!important}
+.allocation-premium .alloc-row-head strong{font-size:15px!important}
+.allocation-premium .alloc-scale{font-size:11px!important;line-height:1.25!important}
+.allocation-premium .alloc-value-line{margin-top:4px!important;font-size:12px!important;line-height:1.35!important}
+.allocation-premium .alloc-value-line strong{font-size:14px!important}
+.allocation-premium .alloc-range{
+  -webkit-appearance:none!important;appearance:none!important;
+  display:block!important;width:100%!important;height:18px!important;min-height:18px!important;
+  margin:3px 0!important;padding:0!important;border:0!important;outline:none!important;
+  background:transparent!important;accent-color:#FFE04B!important;cursor:pointer!important;
+}
+.allocation-premium .alloc-range::-webkit-slider-runnable-track{
+  height:3px!important;border:0!important;border-radius:999px!important;
+  background:#FFE04B!important;box-shadow:0 0 5px #FFE04B55!important;
+}
+.allocation-premium .alloc-range::-webkit-slider-thumb{
+  -webkit-appearance:none!important;appearance:none!important;
+  width:12px!important;height:12px!important;margin-top:-4.5px!important;
+  border:1px solid #fff1a6!important;border-radius:50%!important;
+  background:#FFE66D!important;box-shadow:0 0 5px #FFE04B66!important;
+}
+.allocation-premium .alloc-range::-moz-range-track{
+  height:3px!important;border:0!important;border-radius:999px!important;
+  background:#FFE04B!important;box-shadow:0 0 5px #FFE04B55!important;
+}
+.allocation-premium .alloc-range::-moz-range-progress{
+  height:3px!important;border:0!important;border-radius:999px!important;background:#FFE04B!important;
+}
+.allocation-premium .alloc-range::-moz-range-thumb{
+  width:11px!important;height:11px!important;border:1px solid #fff1a6!important;
+  border-radius:50%!important;background:#FFE66D!important;box-shadow:0 0 5px #FFE04B66!important;
+}
+.allocation-premium .alloc-amount-mode{gap:7px!important;margin-bottom:9px!important}
+.allocation-premium .alloc-amount-mode .alloc-mode-btn{width:40px!important;min-width:40px!important;height:34px!important;min-height:34px!important}
+.allocation-summary{margin-top:10px!important;padding:9px 11px!important}
+@media(max-width:380px){
+  .entry-window{padding:14px 12px calc(20px + env(safe-area-inset-bottom))!important}
+  .allocation-premium{padding:10px!important}
+  .allocation-premium .alloc-row-head strong{font-size:14px!important}
+}
+
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
