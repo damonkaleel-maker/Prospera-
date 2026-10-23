@@ -289,16 +289,7 @@ function saveQuickShortcuts(){
 
 /* Fluxos do botão central. Registros são guardados localmente nesta primeira etapa. */
 let activeEntryType = '';
-// Acionamento centralizado dos oito cards: captura antes do onclick inline do WebView e executa uma única vez.
-document.addEventListener('click',function(event){
- const card=event.target.closest('#entryCardGrid .entry-card, #entryExtraCards .entry-card');
- if(!card)return;
- const raw=card.getAttribute('onclick')||'';
- const match=raw.match(/showEntryForm\('([^']+)'\)/);
- if(!match)return;
- event.preventDefault();event.stopPropagation();
- try{showEntryForm(match[1]);}catch(error){console.error('Falha ao abrir card:',match[1],error);showToast('Não foi possível abrir esta opção. Tente novamente.');}
-},true);
+// Os cards usam seus próprios onclick; não interceptar os eventos no capture do documento.
 function openNewEntryMenu(){
  const modal=document.getElementById('newEntryModal');
  if(!modal)return;
@@ -319,7 +310,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNewEntryMenu()}
 document.getElementById('newEntryModal')?.addEventListener('click',e=>{if(e.target.id==='newEntryModal')closeNewEntryMenu()});
 function showEntryForm(type){
  activeEntryType=type;
- const titles={note:'Anotação Rápida',quick:'Registro Rápido',advanced:'Registro Avançado',debt:'Controle Especializado'};
+ const titles={note:'Anotação Rápida',quick:'Registro Rápido',advanced:'Registro Avançado',debt:'Controle Especializado',recurring:'Contas e Recorrências',allocation:'Distribuição do Dinheiro',documents:'Comprovantes e Documentos',adjustment:'Ajustes e Correções'};
  document.getElementById('entryMenuTitle').textContent=titles[type];
  document.getElementById('entryCardGrid').classList.add('hidden');document.getElementById('entryExtraCards')?.classList.add('hidden');
  const mount=document.getElementById('entryFormMount');
