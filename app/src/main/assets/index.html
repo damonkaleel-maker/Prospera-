@@ -307,6 +307,8 @@ function showEntryForm(type){
 function backEntryCards(){
  document.getElementById('entryFormMount').innerHTML='';
  document.getElementById('entryCardGrid').classList.remove('hidden');
+ document.getElementById('entryExtraCards')?.classList.add('hidden');
+ const moreBtn=document.getElementById('entryMoreToggle');if(moreBtn){moreBtn.classList.remove('hidden');moreBtn.textContent='＋ Mais opções'}
  document.getElementById('entryMenuTitle').textContent='O que você deseja fazer?';
  activeEntryType='';
 }
