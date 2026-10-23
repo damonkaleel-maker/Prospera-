@@ -1,10 +1,10 @@
 # PLANO MESTRE OFICIAL — PRÓSPERA +
 
-**Versão:** 1.0 — ponto de partida para consolidação  
+**Versão:** 1.1 — navegação principal atualizada e reinício autorizado do projeto  
 **Data de consolidação inicial:** 23/10/2026  
 **Plataforma-alvo:** Android (APK), com foco de uso pessoal em Samsung Galaxy A35  
 **Idioma e convenções:** português brasileiro; moeda BRL (R$); datas e números no padrão brasileiro  
-**Status:** especificação-base. A inclusão deste documento no repositório não certifica que os recursos já estejam implementados, que os testes tenham passado ou que exista APK aprovado.
+**Status:** especificação-base atualizada em 23/10/2026. A implementação anterior foi declarada excluída pelo usuário; a nova implementação começará do zero. A inclusão deste documento no repositório não certifica que os recursos já estejam implementados, que os testes tenham passado ou que exista APK aprovado.
 
 ## 1. Finalidade e autoridade do documento
 
@@ -13,7 +13,7 @@ Este documento reúne os requisitos, decisões de produto, regras financeiras, d
 Em caso de divergência, não presumir que o código esteja correto apenas por existir. Comparar o código e o comportamento real com este plano, registrar evidências e resolver divergências explicitamente. Atualizações futuras devem indicar o que mudou, por que mudou e quais testes comprovam a mudança.
 
 ### Regras invioláveis
-1. Não reconstruir o aplicativo do zero nem substituir a implementação existente sem auditoria e autorização explícita.
+1. Para esta nova fase, o usuário autorizou explicitamente recomeçar do zero porque a implementação anterior foi excluída. Construir uma nova base Android; não presumir que código antigo exista. Preservar este Plano Mestre como referência independente e não apagar outros repositórios ou arquivos sem autorização específica.
 2. Não remover recursos, identificadores, fluxos ou dados existentes sem análise de impacto e aprovação.
 3. Preservar os identificadores de interface e as chaves de armazenamento existentes sempre que possível.
 4. Não apagar nem migrar destrutivamente dados locais; toda migração deve ser compatível, validada e reversível quando viável.
@@ -44,9 +44,9 @@ A direção visual é **premium, sofisticada e executiva**, com tema escuro e um
 A navegação inferior desejada contém cinco ações:
 1. **Início** — painel geral.
 2. **Movimentações** — receitas, despesas, transferências e registros financeiros.
-3. **Novo lançamento** — ação central para registrar rapidamente.
-4. **Gráficos / Análises** — visualização de tendências e indicadores.
-5. **Mais** — páginas secundárias e configurações.
+3. **Botão central “+” / Novo lançamento** — ação para registrar rapidamente.
+4. **Análises** — visualização de tendências, indicadores e gráficos; o rótulo visível da aba será “Análises”, não “Gráficos”.
+5. **Aplicações** — última opção da barra, com ícone quadrado compacto e visual refinado; reúne o acesso às áreas secundárias do aplicativo. Não rotular essa aba como “Mais”.
 
 Identificadores de páginas a preservar e conferir no código:
 - `page-dashboard`
@@ -63,7 +63,7 @@ Identificadores de páginas a preservar e conferir no código:
 - `page-categories`
 - `page-settings`
 
-A presença de um ID nesta lista é requisito de auditoria, não prova de que a página esteja funcional. Mapear cada página, seu acesso, suas ações e seus estados.
+A barra inferior deve manter exatamente a ordem: Início → Movimentações → botão central “+” → Análises → Aplicações. O botão “+” é uma ação central, não uma página de navegação equivalente às outras abas. A opção Aplicações deve abrir um painel/menu organizado para acessar as áreas secundárias. A presença de um ID nesta lista é requisito de auditoria, não prova de que a página esteja funcional. Mapear cada página, seu acesso, suas ações e seus estados.
 
 ## 4. Início — central de comando
 
