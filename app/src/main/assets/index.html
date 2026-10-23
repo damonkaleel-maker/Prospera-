@@ -62,6 +62,33 @@ body{background:radial-gradient(ellipse at 50% -12%,#102c57 0%,#050d1c 45%,#0206
 .movement-item small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
 .movement-note{font-size:10px;color:var(--muted);margin-top:10px}
 
+
+/* Tela inicial compacta sem rolagem; as outras páginas continuam roláveis */
+body.dashboard-mode{height:100dvh;overflow:hidden;padding-bottom:0;overscroll-behavior-y:none}
+body.dashboard-mode .app{height:100dvh;min-height:0;overflow:hidden}
+body.dashboard-mode #page-dashboard{height:calc(100dvh - 70px);overflow:hidden}
+body.dashboard-mode .top{padding-top:8px;padding-bottom:4px}
+body.dashboard-mode .logo{width:35px;height:35px}
+body.dashboard-mode .iconbtn{width:34px;height:34px}
+body.dashboard-mode .welcome{padding-top:4px;padding-bottom:7px}
+body.dashboard-mode .welcome h1{font-size:20px;margin:3px 0}
+body.dashboard-mode .balance{padding:11px 13px;margin-bottom:8px}
+body.dashboard-mode .amount{font-size:25px;margin:5px 0 8px}
+body.dashboard-mode .section{margin:8px 0}
+body.dashboard-mode .sectitle{margin-bottom:6px}
+body.dashboard-mode .metric{min-height:75px;padding:8px 10px}
+body.dashboard-mode .metric .micon{width:23px;height:23px;margin-bottom:4px}
+body.dashboard-mode .metric strong{font-size:14px;margin:2px 0}
+body.dashboard-mode .quick button{padding:6px 2px}
+body.dashboard-mode .quick i{width:27px;height:27px;margin-bottom:3px}
+.quick-editor{margin-top:9px;padding:11px;border:1px solid var(--line);border-radius:13px;background:#071326;position:relative;z-index:4}
+.quick-editor[hidden]{display:none!important}
+.quick-editor-title{font-size:11px;color:var(--muted);margin-bottom:8px}
+.quick-choice{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin:6px 0}
+.quick-choice label{font-size:11px;color:var(--muted)}
+.quick-choice select{width:100%;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px;background:#0b1930;color:var(--text);font:inherit;font-size:12px}
+.quick-save{padding:10px;margin-top:5px;font-size:12px}
+
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
@@ -75,7 +102,7 @@ body{background:radial-gradient(ellipse at 50% -12%,#102c57 0%,#050d1c 45%,#0206
 <div class="metric"><div class="micon" style="color:#1bd89a;background:#1bd89a20">↗</div><label>Entradas</label><strong>R$ 5.800,00</strong><small class="up">Receitas registradas</small></div>
 <div class="metric"><div class="micon" style="color:#ff4f79;background:#ff4f7920">↘</div><label>Saídas</label><strong>R$ 3.240,50</strong><small class="down">Despesas registradas</small></div>
 </div></section>
-<section class="section"><div class="sectitle"><h2>Acesso rápido</h2><button onclick="navigate('applications')">Ver tudo ↗</button></div><div class="quick"><button onclick="navigate('movements')"><i>↕</i>Movimentações</button><button onclick="navigate('investments')"><i>◈</i>Investir</button><button onclick="navigate('goals')"><i>◎</i>Metas</button><button onclick="navigate('simulations')"><i>∿</i>Simulação</button></div></section>
+<section class="section quick-section"><div class="sectitle"><h2>Acesso rápido</h2><button onclick="toggleQuickEditor()" id="quickEditToggle">Editar atalhos</button></div><div class="quick" id="quickShortcuts"><button data-quick-slot="0" onclick="navigate('kingdom')"><i>✧</i>Obra do Reino</button><button data-quick-slot="1" onclick="navigate('projects')"><i>▦</i>Projetos</button><button data-quick-slot="2" onclick="navigate('goals')"><i>◎</i>Metas</button><button data-quick-slot="3" onclick="navigate('simulations')"><i>∿</i>Simulação</button></div><div id="quickEditor" class="quick-editor" hidden><div class="quick-editor-title">Escolha o que aparece nos 4 atalhos</div><div id="quickEditorFields"></div><button class="primary quick-save" onclick="saveQuickShortcuts()">Salvar atalhos</button></div></section>
 <div class="hidden" aria-hidden="true"><div id="recentRows"><div class="rowcard"><div class="rowicon">🛒</div><div class="rowmain"><strong>Mercado e alimentação</strong><small>Hoje · Alimentos</small></div><div class="rowval down">− R$ 186,40<small>Despesa</small></div></div><div class="rowcard"><div class="rowicon">↗</div><div class="rowmain"><strong>Recebimento mensal</strong><small>Ontem · Receita</small></div><div class="rowval up">+ R$ 3.500,00<small>Entrada</small></div></div><div class="rowcard"><div class="rowicon">🚗</div><div class="rowmain"><strong>Transporte</strong><small>21 out · Casa e rotina</small></div><div class="rowval down">− R$ 92,00<small>Despesa</small></div></div></div></div>
 </div>
 <div id="page-movements" class="page"><div class="pagehead"><div class="eyebrow">REGISTROS FINANCEIROS</div><h1>Movimentações</h1><div class="sub">Acompanhe entradas, saídas e transferências.</div></div><div class="search">⌕ &nbsp; Buscar movimentações</div><div class="chips"><button class="sel">Todas</button><button>Entradas</button><button>Saídas</button><button>Transferências</button></div><section class="section"><div class="sectitle"><h2>Outubro de 2026</h2><span class="sub">3 registros de exemplo</span></div><div id="movementRows"></div></section></div>
@@ -116,6 +143,7 @@ calculator:[['Calculadora','Operações básicas'],['Aplicar resultado','Somente
 settings:[['Aparência','Tema escuro premium'],['Privacidade','Controles e informações'],['Dados locais','Não apagar dados automaticamente'],['Sobre o aplicativo','Próspera + · Android']]
 };
 function navigate(p){
+ document.body.classList.toggle('dashboard-mode',p==='dashboard');
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
  let el=document.getElementById('page-'+p);
  if(el){el.classList.add('active')}
@@ -172,6 +200,52 @@ function toggleMovementGroup(i,button){
  const count=button.querySelector('.movement-count');
  if(count)count.textContent=count.textContent.replace(/[⌄⌃]/g,'')+(opening?'⌃':'⌄');
 }
+
+const QUICK_OPTIONS=[
+ {id:'kingdom',label:'Obra do Reino',icon:'✧'},
+ {id:'projects',label:'Projetos',icon:'▦'},
+ {id:'goals',label:'Metas',icon:'◎'},
+ {id:'simulations',label:'Simulação $
+
+</script></body></html>,icon:'∿'},
+ {id:'investments',label:'Investimentos',icon:'◈'},
+ {id:'payments',label:'Pagamentos',icon:'▤'},
+ {id:'allocation',label:'Alocação',icon:'◉'},
+ {id:'categories',label:'Categorias',icon:'▦'},
+ {id:'reports',label:'Relatórios',icon:'▧'},
+ {id:'calculator',label:'Calculadora',icon:'＋'},
+ {id:'openfinance',label:'Open Finance',icon:'⌁'}
+];
+function getQuickSelection(){
+ try{const saved=JSON.parse(localStorage.getItem('prosperaQuickShortcuts')||'null');if(Array.isArray(saved)&&saved.length===4)return saved;}catch(e){}
+ return ['kingdom','projects','goals','simulations'];
+}
+function renderQuickShortcuts(){
+ const selected=getQuickSelection();
+ const root=document.getElementById('quickShortcuts');
+ if(!root)return;
+ root.innerHTML=selected.map((id,i)=>{const opt=QUICK_OPTIONS.find(o=>o.id===id)||QUICK_OPTIONS[i];return '<button data-quick-slot="'+i+'" onclick="navigate(\''+opt.id+'\')"><i>'+opt.icon+'</i>'+opt.label+'</button>';}).join('');
+}
+function toggleQuickEditor(){
+ const panel=document.getElementById('quickEditor'), toggle=document.getElementById('quickEditToggle');
+ const opening=panel.hidden;panel.hidden=!opening;
+ toggle.textContent=opening?'Fechar edição':'Editar atalhos';
+ if(opening){
+  const selected=getQuickSelection();
+  document.getElementById('quickEditorFields').innerHTML=selected.map((id,i)=>'<div class="quick-choice"><label>Atalho '+(i+1)+'</label><select id="quickChoice'+i+'" aria-label="Escolher atalho '+(i+1)+'">'+QUICK_OPTIONS.map(o=>'<option value="'+o.id+'" '+(o.id===id?'selected':'')+'>'+o.label+'</option>').join('')+'</select></div>').join('');
+ }
+}
+function saveQuickShortcuts(){
+ const values=[0,1,2,3].map(i=>document.getElementById('quickChoice'+i).value);
+ if(new Set(values).size!==4){showToast('Escolha quatro atalhos diferentes.');return;}
+ try{localStorage.setItem('prosperaQuickShortcuts',JSON.stringify(values));}catch(e){}
+ renderQuickShortcuts();
+ document.getElementById('quickEditor').hidden=true;
+ document.getElementById('quickEditToggle').textContent='Editar atalhos';
+ showToast('Acesso rápido atualizado.');
+}
+
+renderQuickShortcuts();
 renderMovementGroups();
 
 </script></body></html>
