@@ -39,6 +39,29 @@ body{background:radial-gradient(ellipse at 50% -12%,#102c57 0%,#050d1c 45%,#0206
 .chips{padding:0 12px 10px}.chips button{font-size:10px;padding:7px 11px}
 .application-grid{gap:7px}.tile{padding:12px 4px;min-height:92px}.tile .ti{font-size:22px;margin-bottom:6px}.tile strong{font-size:10px}.tile small{font-size:9px}
 .chartbox{height:130px;border-radius:13px}
+
+/* Movimentações agrupadas: expansão e indicadores compactos */
+.movement-group{border:1px solid var(--line);background:linear-gradient(145deg,#091a30,#061020);border-radius:14px;margin-bottom:9px;overflow:hidden}
+.movement-summary{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:12px;border:0;background:transparent}
+.movement-summary .rowmain{flex:1}
+.movement-count{font-size:10px;color:var(--cyan);white-space:nowrap}
+.movement-expand{padding:0 12px 13px;border-top:1px solid var(--line)}
+.movement-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.movement-stat{background:#10213a;border-radius:10px;padding:9px 7px}
+.movement-stat small{display:block;color:var(--muted);font-size:9px}
+.movement-stat strong{display:block;font-size:11px;margin-top:4px;overflow-wrap:anywhere}
+.movement-visuals{display:flex;align-items:center;gap:12px;margin:12px 0}
+.movement-donut{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:conic-gradient(var(--green) var(--paid-angle),#26344b 0)}
+.movement-donut:after{content:attr(data-percent);width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#071326;font-size:11px;font-weight:700}
+.movement-progress-wrap{flex:1;min-width:0}
+.movement-progress-label{display:flex;justify-content:space-between;gap:6px;color:var(--muted);font-size:10px;margin-bottom:7px}
+.movement-progress{height:7px;border-radius:10px;background:#26344b;overflow:hidden}
+.movement-progress span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.movement-item{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #17304b;font-size:11px}
+.movement-item:last-child{border-bottom:0}
+.movement-item small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.movement-note{font-size:10px;color:var(--muted);margin-top:10px}
+
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
@@ -110,5 +133,45 @@ function navigate(p){
 }
 function showToast(t){let e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2800)}
 let hiddenBalance=false;function toggleBalance(){hiddenBalance=!hiddenBalance;document.getElementById('balanceAmount').textContent=hiddenBalance?'••••••••':'R$ 12.845,90'}
-document.getElementById('movementRows').innerHTML=document.getElementById('recentRows').innerHTML;
+
+const sampleMovements = [
+ {group:'Daniel · PIX recebidos',kind:'Entrada',icon:'↙',items:[
+  {date:'23/10/2026',description:'PIX recebido',value:150,kind:'Entrada'},
+  {date:'20/10/2026',description:'PIX recebido',value:80,kind:'Entrada'},
+  {date:'16/10/2026',description:'PIX recebido',value:120,kind:'Entrada'}]},
+ {group:'Notebook · Compra parcelada',kind:'Despesa',icon:'▣',total:2400,paid:720,installments:10,items:[
+  {date:'10/10/2026',description:'Parcela 3 de 10',value:240,kind:'Despesa'},
+  {date:'10/09/2026',description:'Parcela 2 de 10',value:240,kind:'Despesa'},
+  {date:'10/08/2026',description:'Parcela 1 de 10',value:240,kind:'Despesa'}]},
+ {group:'Mercado e alimentação',kind:'Despesa',icon:'🛒',items:[
+  {date:'22/10/2026',description:'Compra no mercado',value:186.40,kind:'Despesa'},
+  {date:'18/10/2026',description:'Compra no mercado',value:92.50,kind:'Despesa'}]}
+];
+function moneyBRL(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function renderMovementGroups(){
+ const root=document.getElementById('movementRows');
+ if(!root)return;
+ root.innerHTML=sampleMovements.map((g,i)=>{
+  const total=g.items.reduce((n,x)=>n+x.value,0);
+  const paid=g.paid ?? total;
+  const target=g.total ?? total;
+  const remaining=Math.max(0,target-paid);
+  const pct=target>0?Math.min(100,Math.round(paid/target*100)):100;
+  const count=g.items.length;
+  const itemHtml=g.items.map(x=>'<div class="movement-item"><div><strong>'+x.description+'</strong><small>'+x.date+' · '+x.kind+'</small></div><strong class="'+(x.kind==='Entrada'?'up':'down')+'">'+(x.kind==='Entrada'?'+ ':'− ')+moneyBRL(x.value)+'</strong></div>').join('');
+  const installmentText=g.installments?((g.paid/g.total*g.installments)||0):null;
+  const paidInstallments=g.installments?Math.round(g.paid/(g.total/g.installments)):null;
+  return '<article class="movement-group"><button class="movement-summary" aria-expanded="false" onclick="toggleMovementGroup('+i+',this)"><span class="rowicon">'+g.icon+'</span><span class="rowmain"><strong>'+g.group+'</strong><small>'+g.kind+' · '+(g.installments?(paidInstallments+' de '+g.installments+' parcelas pagas'):moneyBRL(total)+' movimentados')+'</small></span><span class="movement-count">'+count+' registro'+(count===1?'':'s')+'⌄</span></button><div class="movement-expand" id="movement-detail-'+i+'" hidden><div class="movement-stats"><div class="movement-stat"><small>Total registrado</small><strong>'+moneyBRL(target)+'</strong></div><div class="movement-stat"><small>Já pago/movido</small><strong>'+moneyBRL(paid)+'</strong></div><div class="movement-stat"><small>'+(g.installments?'Falta pagar':'Saldo restante')+'</small><strong>'+moneyBRL(remaining)+'</strong></div></div><div class="movement-visuals"><div class="movement-donut" style="--paid-angle:'+pct*3.6+'deg" data-percent="'+pct+'%"></div><div class="movement-progress-wrap"><div class="movement-progress-label"><span>'+(g.installments?'Progresso das parcelas':'Progresso do total')+'</span><strong>'+pct+'%</strong></div><div class="movement-progress"><span style="width:'+pct+'%"></span></div><div class="movement-note">'+(g.installments?(g.installments-paidInstallments)+' parcela(s) restante(s)':'Valores ilustrativos nesta versão de demonstração')+'</div></div></div><div class="sectitle"><h2>Movimentações</h2><span class="sub">'+count+' registros</span></div>'+itemHtml+'</div></article>';
+ }).join('')+'<div class="emptyhint">Demonstração visual: estes registros são exemplos, não dados financeiros reais. O cadastro e o salvamento de movimentações reais serão conectados na etapa funcional.</div>';
+}
+function toggleMovementGroup(i,button){
+ const panel=document.getElementById('movement-detail-'+i);
+ const opening=panel.hidden;
+ panel.hidden=!opening;
+ button.setAttribute('aria-expanded',String(opening));
+ const count=button.querySelector('.movement-count');
+ if(count)count.textContent=count.textContent.replace(/[⌄⌃]/g,'')+(opening?'⌃':'⌄');
+}
+renderMovementGroups();
+
 </script></body></html>
