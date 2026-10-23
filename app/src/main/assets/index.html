@@ -126,6 +126,27 @@ body.dashboard-mode{overscroll-behavior-y:auto}
 .quick button{transition:transform .12s,border-color .12s,background .12s,box-shadow .12s}
 .quick button:active,.quick button:focus-visible{border-color:var(--cyan);background:#0d3047;box-shadow:0 0 0 1px #28d8f055,0 0 14px #168dff22;outline:none;transform:scale(.97)}
 .quick button:active i,.quick button:focus-visible i{background:#168dff35;color:#75eaff;box-shadow:0 0 12px #168dff35}
+
+/* Distribuição do dinheiro: compactação forte, sem alterar a lógica dos controles */
+.allocation-premium{padding:9px!important;border-radius:14px!important}
+.allocation-premium .alloc-mode-switch{gap:6px!important;margin:5px 0 8px!important}
+.allocation-premium .alloc-mode-btn{height:34px!important;min-height:34px!important;border-radius:9px!important;font-size:18px!important}
+.allocation-premium .alloc-row{padding:4px 0!important;border-bottom:1px solid #3d3a2a!important}
+.allocation-premium .alloc-row-head strong{font-size:13px!important;text-shadow:0 0 5px #FFE04B55!important}
+.allocation-premium .alloc-row-head label{font-size:11px!important}
+.allocation-premium .alloc-range{display:block;width:100%;height:14px!important;min-height:14px!important;margin:2px 0!important;accent-color:#FFD92E;cursor:pointer}
+.allocation-premium .alloc-range::-webkit-slider-runnable-track{height:3px!important;border-radius:99px;background:#514a22}
+.allocation-premium .alloc-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;margin-top:-4px;border-radius:50%;background:#FFE04B;border:1px solid #fff1a6;box-shadow:0 0 5px #FFE04B88}
+.allocation-premium .alloc-range::-moz-range-track{height:3px;border-radius:99px;background:#514a22}
+.allocation-premium .alloc-range::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#FFE04B;border:1px solid #fff1a6;box-shadow:0 0 5px #FFE04B88}
+.allocation-premium .alloc-scale{font-size:9px!important;line-height:1.1!important}
+.allocation-premium .alloc-value-line{margin-top:2px!important;font-size:10px!important;line-height:1.2!important}
+.allocation-premium .alloc-value-line strong{font-size:12px!important}
+.allocation-summary{margin-top:7px!important;padding:6px 9px!important;border-radius:10px!important}
+.allocation-summary .alloc-total-line{padding:3px 0!important;font-size:10px!important;gap:6px!important}
+.allocation-summary .alloc-total-line strong{font-size:12px!important}
+.allocation-summary .alloc-progress{height:4px!important;margin:5px 0 7px!important}
+
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
