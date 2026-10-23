@@ -63,24 +63,8 @@ body{background:radial-gradient(ellipse at 50% -12%,#102c57 0%,#050d1c 45%,#0206
 .movement-note{font-size:10px;color:var(--muted);margin-top:10px}
 
 
-/* Tela inicial compacta sem rolagem; as outras páginas continuam roláveis */
-body.dashboard-mode{height:100dvh;overflow:hidden;padding-bottom:0;overscroll-behavior-y:none}
-body.dashboard-mode .app{height:100dvh;min-height:0;overflow:hidden}
-body.dashboard-mode #page-dashboard{height:calc(100dvh - 70px);overflow:hidden}
-body.dashboard-mode .top{padding-top:8px;padding-bottom:4px}
-body.dashboard-mode .logo{width:35px;height:35px}
-body.dashboard-mode .iconbtn{width:34px;height:34px}
-body.dashboard-mode .welcome{padding-top:4px;padding-bottom:7px}
-body.dashboard-mode .welcome h1{font-size:20px;margin:3px 0}
-body.dashboard-mode .balance{padding:11px 13px;margin-bottom:8px}
-body.dashboard-mode .amount{font-size:25px;margin:5px 0 8px}
-body.dashboard-mode .section{margin:8px 0}
-body.dashboard-mode .sectitle{margin-bottom:6px}
-body.dashboard-mode .metric{min-height:75px;padding:8px 10px}
-body.dashboard-mode .metric .micon{width:23px;height:23px;margin-bottom:4px}
-body.dashboard-mode .metric strong{font-size:14px;margin:2px 0}
-body.dashboard-mode .quick button{padding:6px 2px}
-body.dashboard-mode .quick i{width:27px;height:27px;margin-bottom:3px}
+/* Mantém a tela inicial com proporções naturais e rolagem normal. */
+body.dashboard-mode{overscroll-behavior-y:auto}
 .quick-editor{margin-top:9px;padding:11px;border:1px solid var(--line);border-radius:13px;background:#071326;position:relative;z-index:4}
 .quick-editor[hidden]{display:none!important}
 .quick-editor-title{font-size:11px;color:var(--muted);margin-bottom:8px}
@@ -271,7 +255,12 @@ function saveQuickShortcuts(){
  const values=[0,1,2,3].map(i=>document.getElementById('quickChoice'+i).value);
  if(new Set(values).size!==4){showToast('Escolha quatro atalhos diferentes.');return;}
  try{localStorage.setItem('prosperaQuickShortcuts',JSON.stringify(values));}catch(e){}
- 
+ renderQuickShortcuts();
+ document.getElementById('quickEditor').hidden=true;
+ document.getElementById('quickEditToggle').textContent='Editar atalhos';
+ showToast('Acesso rápido atualizado.');
+}
+
 /* Fluxos do botão central. Registros são guardados localmente nesta primeira etapa. */
 let activeEntryType = '';
 function openNewEntryMenu(){
@@ -355,12 +344,6 @@ function saveDebtEntry(){
  if(amount<=0||!party){showToast('Informe a pessoa/instituição e um valor maior que zero.');return}
  const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),kind:document.getElementById('enDebtKind').value,party,description:document.getElementById('enDebtDesc').value,amount,dueDate:document.getElementById('enDebtDue').value,terms:document.getElementById('enDebtTerms').value,createdAt:new Date().toISOString()};
  if(saveLocalRecord('prosperaDebtControls',record)){showToast('Controle salvo neste dispositivo.');backEntryCards()}
-}
-
-renderQuickShortcuts();
- document.getElementById('quickEditor').hidden=true;
- document.getElementById('quickEditToggle').textContent='Editar atalhos';
- showToast('Acesso rápido atualizado.');
 }
 
 renderQuickShortcuts();
