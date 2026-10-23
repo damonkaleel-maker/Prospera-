@@ -278,8 +278,16 @@ function saveQuickShortcuts(){
 
 /* Fluxos do botão central. Registros são guardados localmente nesta primeira etapa. */
 let activeEntryType = '';
-// Fallback explícito para WebView Android: garante o acionamento dos oito cards.
-document.addEventListener('click',function(event){const card=event.target.closest('#entryCardGrid .entry-card, #entryExtraCards .entry-card');if(!card)return;const raw=card.getAttribute('onclick')||'';const start=raw.indexOf("showEntryForm('");if(start<0)return;const from=start+15,end=raw.indexOf("'",from);const type=raw.slice(from,end);if(type){event.preventDefault();showEntryForm(type);}});
+// Acionamento centralizado dos oito cards: captura antes do onclick inline do WebView e executa uma única vez.
+document.addEventListener('click',function(event){
+ const card=event.target.closest('#entryCardGrid .entry-card, #entryExtraCards .entry-card');
+ if(!card)return;
+ const raw=card.getAttribute('onclick')||'';
+ const match=raw.match(/showEntryForm\\('([^']+)'\\)/);
+ if(!match)return;
+ event.preventDefault();event.stopPropagation();
+ try{showEntryForm(match[1]);}catch(error){console.error('Falha ao abrir card:',match[1],error);showToast('Não foi possível abrir esta opção. Tente novamente.');}
+},true);
 function openNewEntryMenu(){
  const modal=document.getElementById('newEntryModal');
  if(!modal)return;
