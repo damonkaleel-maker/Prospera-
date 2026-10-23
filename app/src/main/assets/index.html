@@ -89,6 +89,27 @@ body.dashboard-mode .quick i{width:27px;height:27px;margin-bottom:3px}
 .quick-choice select{width:100%;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px;background:#0b1930;color:var(--text);font:inherit;font-size:12px}
 .quick-save{padding:10px;margin-top:5px;font-size:12px}
 
+
+/* Janela ampla do botão central: Novo lançamento */
+.entry-overlay{position:fixed;inset:0;z-index:50;background:#020611d9;backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:12px}
+.entry-overlay[hidden]{display:none!important}
+.entry-window{width:min(100%,560px);height:min(92dvh,900px);overflow:auto;border:1px solid #20517e;border-radius:24px;background:linear-gradient(160deg,#0b1b31,#030916 72%);box-shadow:0 20px 70px #000b;padding:17px;overscroll-behavior:contain}
+.entry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}
+.entry-head h2{font-size:21px;margin:4px 0}.entry-close{border:1px solid var(--line);background:#0b1930;border-radius:12px;width:39px;height:39px;font-size:21px}
+.entry-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.entry-card{min-height:128px;text-align:left;padding:15px;border:1px solid #1a426a;border-radius:17px;background:linear-gradient(145deg,#0d213b,#071326);color:var(--text)}
+.entry-card:active{transform:scale(.985);border-color:var(--cyan)}
+.entry-card .ec-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#168dff1e;color:var(--cyan);font-size:22px;margin-bottom:12px}
+.entry-card strong{display:block;font-size:14px}.entry-card small{display:block;color:var(--muted);font-size:11px;line-height:1.45;margin-top:5px}
+.entry-form{margin-top:15px;border-top:1px solid var(--line);padding-top:15px}
+.entry-form h3{font-size:16px;margin:0 0 12px}.entry-form label{display:block;font-size:11px;color:var(--muted);margin:5px 0}
+.entry-form .field{margin:5px 0 9px}.entry-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.entry-impact{border:1px solid #1b4b71;background:#071b30;border-radius:13px;padding:12px;margin:5px 0 12px;font-size:12px;line-height:1.6}
+.entry-impact strong{color:var(--cyan)}.entry-actions{display:flex;gap:8px;margin-top:8px}.entry-actions button{flex:1}
+.entry-secondary{border:1px solid var(--line);background:#0b1930;border-radius:12px;padding:12px}
+.entry-note{color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
+@media(max-width:360px){.entry-overlay{padding:6px}.entry-window{padding:12px;border-radius:18px}.entry-card{padding:11px;min-height:120px}.entry-card .ec-icon{width:35px;height:35px}}
+
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">P+</div><div><strong>Próspera <span style="color:var(--gold)">+</span></strong><small>INTELIGÊNCIA FINANCEIRA</small></div></div><button class="iconbtn" onclick="showToast('Central de notificações')">♧</button></header>
 <div id="page-dashboard" class="page active">
@@ -112,7 +133,20 @@ body.dashboard-mode .quick i{width:27px;height:27px;margin-bottom:3px}
 </div></section></div>
 <div id="page-new" class="page"><div class="pagehead"><div class="eyebrow">REGISTRO RÁPIDO</div><h1>Novo lançamento</h1><div class="sub">Esta tela é visual nesta primeira etapa.</div></div><section class="section"><label class="sub">Tipo de lançamento</label><div class="chips" style="padding:8px 0"><button class="sel">Despesa</button><button>Receita</button><button>Transferência</button></div><label class="sub">Descrição</label><input class="field" placeholder="Ex.: mercado, salário..."><label class="sub">Valor (R$)</label><input class="field" inputmode="decimal" placeholder="0,00"><label class="sub">Categoria</label><select class="field"><option>Selecione uma categoria</option><option>Casa</option><option>Compras</option><option>Alimentos</option><option>Investimentos</option><option>Saúde</option><option>Projetos</option><option>Metas</option><option>Reserva</option><option>Obra do Reino</option></select><label class="sub">Data</label><input class="field" type="date"><button class="primary" onclick="showToast('Formulário demonstrativo — salvamento será implementado na próxima etapa.')">Continuar</button></section></div>
 <div id="page-detail" class="page"><div class="pagehead"><button class="iconbtn" onclick="navigate('applications')">←</button><div class="eyebrow" id="detailEyebrow">PRÓSPERA +</div><h1 id="detailTitle">Área</h1><div class="sub" id="detailSub">Área em preparação</div></div><section class="section"><div class="rowcard"><div class="rowicon">✦</div><div class="rowmain"><strong>Estrutura visual preparada</strong><small>Conteúdo e funcionalidades serão implementados por etapas.</small></div></div><div class="emptyhint">Esta versão é a base visual de navegação. Nenhuma conexão bancária está ativa e os valores de exemplo não são dados reais.</div></section></div>
-<nav class="nav"><button class="active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ni">⌂</span><span>Início</span></button><button data-page="movements" onclick="navigate('movements')"><span class="ni">↕</span><span>Movimentações</span></button><button class="plus" data-page="new" onclick="navigate('new')"><span class="ni">+</span><span>Novo</span></button><button data-page="analytics" onclick="navigate('analytics')"><span class="ni">◫</span><span>Análises</span></button><button data-page="applications" onclick="navigate('applications')"><span class="ni">▦</span><span>Aplicações</span></button></nav>
+
+<div id="newEntryModal" class="entry-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="entryMenuTitle">
+ <section class="entry-window">
+  <header class="entry-head"><div><div class="eyebrow">PRÓSPERA + · CENTRAL DE LANÇAMENTOS</div><h2 id="entryMenuTitle">O que você deseja fazer?</h2><div class="sub">Escolha uma opção. A tela inicial permanece intacta.</div></div><button class="entry-close" aria-label="Fechar" onclick="closeNewEntryMenu()">×</button></header>
+  <div id="entryCardGrid" class="entry-cards">
+   <button class="entry-card" onclick="showEntryForm('note')"><span class="ec-icon">▧</span><strong>Anotação Rápida</strong><small>Texto, data e foto da galeria ou câmera.</small></button>
+   <button class="entry-card" onclick="showEntryForm('quick')"><span class="ec-icon">↕</span><strong>Registro Rápido</strong><small>Entradas, despesas, transferências e destinações, com parcelas simples.</small></button>
+   <button class="entry-card" onclick="showEntryForm('advanced')"><span class="ec-icon">⚙</span><strong>Registro Avançado</strong><small>Campos técnicos, parcelamento e configurações detalhadas.</small></button>
+   <button class="entry-card" onclick="showEntryForm('debt')"><span class="ec-icon">◈</span><strong>Controle Especializado</strong><small>Dívidas, empréstimos, vencimentos e alertas.</small></button>
+  </div>
+  <div id="entryFormMount"></div>
+ </section>
+</div>
+<nav class="nav"><button class="active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ni">⌂</span><span>Início</span></button><button data-page="movements" onclick="navigate('movements')"><span class="ni">↕</span><span>Movimentações</span></button><button class="plus" data-page="new" onclick="openNewEntryMenu()"><span class="ni">+</span><span>Novo</span></button><button data-page="analytics" onclick="navigate('analytics')"><span class="ni">◫</span><span>Análises</span></button><button data-page="applications" onclick="navigate('applications')"><span class="ni">▦</span><span>Aplicações</span></button></nav>
 <div id="toast" style="display:none;position:fixed;bottom:95px;left:20px;right:20px;max-width:520px;margin:auto;background:#202d42;border:1px solid #3a506e;padding:13px 16px;border-radius:14px;font-size:12px;z-index:20"></div>
 </main><script>
 const labels={
@@ -239,7 +273,84 @@ function saveQuickShortcuts(){
  const values=[0,1,2,3].map(i=>document.getElementById('quickChoice'+i).value);
  if(new Set(values).size!==4){showToast('Escolha quatro atalhos diferentes.');return;}
  try{localStorage.setItem('prosperaQuickShortcuts',JSON.stringify(values));}catch(e){}
- renderQuickShortcuts();
+ 
+/* Fluxos do botão central. Registros são guardados localmente nesta primeira etapa. */
+let activeEntryType = '';
+function openNewEntryMenu(){
+ const modal=document.getElementById('newEntryModal');
+ if(!modal)return;
+ modal.hidden=false;
+ document.getElementById('entryFormMount').innerHTML='';
+ document.getElementById('entryCardGrid').classList.remove('hidden');
+ document.getElementById('entryMenuTitle').textContent='O que você deseja fazer?';
+ document.body.style.overflow='hidden';
+}
+function closeNewEntryMenu(){
+ const modal=document.getElementById('newEntryModal');
+ if(modal)modal.hidden=true;
+ document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNewEntryMenu()});
+document.getElementById('newEntryModal')?.addEventListener('click',e=>{if(e.target.id==='newEntryModal')closeNewEntryMenu()});
+function showEntryForm(type){
+ activeEntryType=type;
+ const titles={note:'Anotação Rápida',quick:'Registro Rápido',advanced:'Registro Avançado',debt:'Controle Especializado'};
+ document.getElementById('entryMenuTitle').textContent=titles[type];
+ document.getElementById('entryCardGrid').classList.add('hidden');
+ const mount=document.getElementById('entryFormMount');
+ if(type==='note'){
+  mount.innerHTML='<div class="entry-form"><h3>Nova anotação</h3><label>Data</label><input class="field" id="enDate" type="date" value="'+new Date().toISOString().slice(0,10)+'"><label>Texto da anotação</label><textarea class="field" id="enText" rows="4" placeholder="Escreva sua anotação..."></textarea><label>Imagem (opcional)</label><input class="field" id="enImage" type="file" accept="image/*" capture="environment"><div class="entry-note">Você pode escolher uma imagem da galeria ou usar a câmera do celular. Imagens ficam somente nesta opção.</div><div class="entry-actions"><button class="entry-secondary" onclick="backEntryCards()">Voltar</button><button class="primary" onclick="saveQuickNote()">Salvar anotação</button></div></div>';
+ } else if(type==='quick'||type==='advanced'){
+  const advanced=type==='advanced';
+  mount.innerHTML='<div class="entry-form"><h3>'+(advanced?'Detalhes do lançamento':'Dados do lançamento')+'</h3><label>Tipo</label><select class="field" id="enKind" onchange="updateEntryImpact()"><option value="Despesa">Despesa</option><option value="Receita">Receita</option><option value="Transferência">Transferência</option><option value="Destinação">Destinação</option></select><label>Descrição</label><input class="field" id="enDescription" placeholder="Ex.: mercado, salário, reserva..."><div class="entry-two"><div><label>Valor total (R$)</label><input class="field" id="enAmount" inputmode="decimal" placeholder="0,00" oninput="updateEntryImpact()"></div><div><label>Data</label><input class="field" id="enDate" type="date" value="'+new Date().toISOString().slice(0,10)+'"></div></div><label>Categoria</label><select class="field" id="enCategory"><option>Casa</option><option>Compras</option><option>Alimentos</option><option>Investimentos</option><option>Saúde</option><option>Projetos</option><option>Metas</option><option>Reserva</option><option>Obra do Reino</option><option>Outros</option></select><label>Conta / forma de pagamento</label><input class="field" id="enAccount" placeholder="Ex.: conta corrente, Pix, dinheiro"><div class="entry-two"><div><label>Número de parcelas</label><input class="field" id="enInstallments" type="number" min="1" step="1" value="1" oninput="updateEntryImpact()"></div><div><label>Status</label><select class="field" id="enStatus"><option>Pendente</option><option>Pago</option><option>Recebido</option><option>Previsto</option></select></div></div>'+(advanced?'<label>Data de vencimento</label><input class="field" id="enDue" type="date"><label>Juros / encargos (R$)</label><input class="field" id="enInterest" inputmode="decimal" value="0"><label>Observações técnicas</label><textarea class="field" id="enNotes" rows="2" placeholder="Competência, referência ou observações..."></textarea>':'')+'<div class="entry-impact" id="entryImpact">Prévia do impacto: informe um valor para calcular.</div><div class="entry-actions"><button class="entry-secondary" onclick="backEntryCards()">Voltar</button><button class="primary" onclick="saveFinancialEntry()">Salvar lançamento</button></div><div class="entry-note">Transferências não serão tratadas como receita ou despesa. Os dados ficam salvos localmente neste protótipo; ainda não há sincronização bancária.</div></div>';
+  updateEntryImpact();
+ } else {
+  mount.innerHTML='<div class="entry-form"><h3>Controle Especializado</h3><label>Tipo de controle</label><select class="field" id="enDebtKind"><option>Dívida pessoal</option><option>Dívida de alavancagem</option><option>Empréstimo que fiz (a receber)</option><option>Empréstimo que pedi (a pagar)</option></select><label>Pessoa ou instituição</label><input class="field" id="enDebtParty" placeholder="Nome do credor ou devedor"><label>Descrição</label><input class="field" id="enDebtDesc" placeholder="Finalidade ou acordo"><div class="entry-two"><div><label>Valor (R$)</label><input class="field" id="enDebtAmount" inputmode="decimal" placeholder="0,00"></div><div><label>Vencimento</label><input class="field" id="enDebtDue" type="date"></div></div><label>Juros / condições</label><input class="field" id="enDebtTerms" placeholder="Sem juros, taxa acordada etc."><div class="entry-actions"><button class="entry-secondary" onclick="backEntryCards()">Voltar</button><button class="primary" onclick="saveDebtEntry()">Salvar controle</button></div><div class="entry-note">Os lembretes serão registrados com o controle; notificações automáticas ainda precisam de implementação própria.</div></div>';
+ }
+}
+function backEntryCards(){
+ document.getElementById('entryFormMount').innerHTML='';
+ document.getElementById('entryCardGrid').classList.remove('hidden');
+ document.getElementById('entryMenuTitle').textContent='O que você deseja fazer?';
+ activeEntryType='';
+}
+function entryNumber(id){const el=document.getElementById(id);if(!el)return 0;return Number(String(el.value).replace(',','.'))||0}
+function updateEntryImpact(){
+ const kind=document.getElementById('enKind')?.value||'Despesa';
+ const amount=entryNumber('enAmount');
+ const installments=Math.max(1,parseInt(document.getElementById('enInstallments')?.value||'1',10)||1);
+ const interest=entryNumber('enInterest');
+ const target=document.getElementById('entryImpact');
+ if(!target)return;
+ const per=(amount+interest)/installments;
+ const effect=kind==='Receita'?'Entrada estimada':kind==='Despesa'?'Saída estimada':kind==='Transferência'?'Transferência interna (não é receita nem despesa)':'Destinação interna (não contar duas vezes)';
+ target.innerHTML='<strong>Prévia do impacto</strong><br>Valor informado: '+moneyBRL(amount)+'<br>'+(interest?'Juros/encargos: '+moneyBRL(interest)+'<br>':'')+'Parcelas: '+installments+' × '+moneyBRL(per)+'<br>Classificação: '+effect;
+}
+function saveLocalRecord(key,record){
+ try{const list=JSON.parse(localStorage.getItem(key)||'[]');list.push(record);localStorage.setItem(key,JSON.stringify(list));return true}catch(e){showToast('Não foi possível salvar no armazenamento local.');return false}
+}
+function saveQuickNote(){
+ const text=document.getElementById('enText')?.value.trim();
+ const file=document.getElementById('enImage')?.files?.[0];
+ if(!text&&!file){showToast('Escreva uma anotação ou selecione uma imagem.');return}
+ const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:document.getElementById('enDate').value,text:text||'',imageName:file?.name||'',createdAt:new Date().toISOString()};
+ if(saveLocalRecord('prosperaQuickNotes',record)){showToast('Anotação salva neste dispositivo.');backEntryCards()}
+}
+function saveFinancialEntry(){
+ const amount=entryNumber('enAmount'),description=document.getElementById('enDescription')?.value.trim();
+ if(amount<=0||!description){showToast('Informe uma descrição e um valor maior que zero.');return}
+ const type=document.getElementById('enKind').value;
+ const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type,description,amount,date:document.getElementById('enDate').value,category:document.getElementById('enCategory').value,account:document.getElementById('enAccount').value,installments:Math.max(1,parseInt(document.getElementById('enInstallments').value||'1',10)||1),status:document.getElementById('enStatus').value,advanced:activeEntryType==='advanced',dueDate:document.getElementById('enDue')?.value||'',interest:entryNumber('enInterest'),notes:document.getElementById('enNotes')?.value||'',createdAt:new Date().toISOString()};
+ if(saveLocalRecord('prosperaFinancialEntries',record)){showToast('Lançamento salvo neste dispositivo.');backEntryCards()}
+}
+function saveDebtEntry(){
+ const amount=entryNumber('enDebtAmount'),party=document.getElementById('enDebtParty')?.value.trim();
+ if(amount<=0||!party){showToast('Informe a pessoa/instituição e um valor maior que zero.');return}
+ const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),kind:document.getElementById('enDebtKind').value,party,description:document.getElementById('enDebtDesc').value,amount,dueDate:document.getElementById('enDebtDue').value,terms:document.getElementById('enDebtTerms').value,createdAt:new Date().toISOString()};
+ if(saveLocalRecord('prosperaDebtControls',record)){showToast('Controle salvo neste dispositivo.');backEntryCards()}
+}
+
+renderQuickShortcuts();
  document.getElementById('quickEditor').hidden=true;
  document.getElementById('quickEditToggle').textContent='Editar atalhos';
  showToast('Acesso rápido atualizado.');
