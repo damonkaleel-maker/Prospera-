@@ -73,22 +73,24 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  cleanup-failed-runs:
-    name: Delete previous failed build runs after successful APK build
+  cleanup-previous-runs:
+    name: Delete all previous runs after successful APK build
     needs: build
     if: success()
     runs-on: ubuntu-latest
     steps:
-      - name: Delete failed runs for this APK workflow
+      - name: Delete all earlier runs of this APK workflow
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
         shell: bash
         run: |
           set -euo pipefail
-          gh api --paginate "repos/$GH_REPO/actions/workflows/android-apk.yml/runs?status=failure&per_page=100" --jq '.workflow_runs[].id' |
+          gh api --paginate "repos/$GH_REPO/actions/workflows/android-apk.yml/runs?per_page=100" --jq '.workflow_runs[].id' > runs-to-clean.txt
           while read -r run_id; do
             [ -n "$run_id" ] || continue
-            echo "Deleting failed workflow run $run_id"
+            [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
+            echo "Deleting earlier workflow run $run_id"
             gh api --method DELETE "repos/$GH_REPO/actions/runs/$run_id"
-          done
+          done < runs-to-clean.txt
