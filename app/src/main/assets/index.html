@@ -294,7 +294,7 @@ function showEntryForm(type){
  activeEntryType=type;
  const titles={note:'Anotação Rápida',quick:'Registro Rápido',advanced:'Registro Avançado',debt:'Controle Especializado'};
  document.getElementById('entryMenuTitle').textContent=titles[type];
- document.getElementById('entryCardGrid').classList.add('hidden');
+ document.getElementById('entryCardGrid').classList.add('hidden');document.getElementById('entryExtraCards')?.classList.add('hidden');
  const mount=document.getElementById('entryFormMount');
  if(type==='note'){
   mount.innerHTML='<div class="entry-form"><h3>Nova anotação</h3><label>Data</label><input class="field" id="enDate" type="date" value="'+new Date().toISOString().slice(0,10)+'"><label>Texto da anotação</label><textarea class="field" id="enText" rows="4" placeholder="Escreva sua anotação..."></textarea><label>Imagem (opcional)</label><input class="field" id="enImage" type="file" accept="image/*" capture="environment"><div class="entry-note">Você pode escolher uma imagem da galeria ou usar a câmera do celular. Imagens ficam somente nesta opção.</div><div class="entry-actions"><button class="entry-secondary" onclick="backEntryCards()">Voltar</button><button class="primary" onclick="saveQuickNote()">Salvar anotação</button></div></div>';
@@ -307,11 +307,11 @@ function showEntryForm(type){
  }
 }
 function backEntryCards(){
- document.getElementById('entryFormMount').innerHTML='';
- document.getElementById('entryCardGrid').classList.remove('hidden');
- document.getElementById('entryExtraCards')?.classList.add('hidden');
- const moreBtn=document.getElementById('entryMoreToggle');if(moreBtn){moreBtn.classList.remove('hidden');moreBtn.textContent='＋ Mais opções'}
- document.getElementById('entryMenuTitle').textContent='O que você deseja fazer?';
+ const mount=document.getElementById('entryFormMount');if(mount)mount.innerHTML='';
+ document.getElementById('entryCardGrid')?.classList.remove('hidden');
+ document.getElementById('entryExtraCards')?.classList.remove('hidden');
+ const moreBtn=document.getElementById('entryMoreToggle');if(moreBtn)moreBtn.classList.add('hidden');
+ const title=document.getElementById('entryMenuTitle');if(title)title.textContent='O que você deseja fazer?';
  activeEntryType='';
 }
 function entryNumber(id){const el=document.getElementById(id);if(!el)return 0;return Number(String(el.value).replace(',','.'))||0}
@@ -363,9 +363,13 @@ function saveDebtEntry(){
 function toggleExtraEntryCards(){const p=document.getElementById('entryExtraCards'),b=document.getElementById('entryMoreToggle');if(!p||!b)return;const open=p.classList.contains('hidden');p.classList.toggle('hidden',!open);b.textContent=open?'− Menos opções':'＋ Mais opções'}
 const showEntryFormBase=showEntryForm;
 function showEntryForm(type){
+ const allowed=['note','quick','advanced','debt','recurring','allocation','documents','adjustment'];
+ if(!allowed.includes(type)){showToast('Esta opção não está disponível.');return}
  if(!['recurring','allocation','documents','adjustment'].includes(type)){showEntryFormBase(type);return}
  activeEntryType=type;const titles={recurring:'Contas e Recorrências',allocation:'Distribuição do Dinheiro',documents:'Comprovantes e Documentos',adjustment:'Ajustes e Correções'};
- document.getElementById('entryMenuTitle').textContent=titles[type];document.getElementById('entryCardGrid').classList.add('hidden');document.getElementById('entryExtraCards').classList.add('hidden');document.getElementById('entryMoreToggle').classList.add('hidden');
+ const title=document.getElementById('entryMenuTitle');if(title)title.textContent=titles[type];
+ document.getElementById('entryCardGrid')?.classList.add('hidden');document.getElementById('entryExtraCards')?.classList.add('hidden');
+ const moreBtn=document.getElementById('entryMoreToggle');if(moreBtn)moreBtn.classList.add('hidden');
  const m=document.getElementById('entryFormMount'),today=new Date().toISOString().slice(0,10),back='<div class="entry-actions"><button class="entry-secondary" onclick="backEntryCards()">Voltar</button>';
  if(type==='recurring')m.innerHTML='<div class="entry-form"><h3>Programar compromisso recorrente</h3><label>Tipo</label><select class="field" id="xRecType"><option>Despesa</option><option>Receita</option></select><label>Descrição</label><input class="field" id="xRecDesc" placeholder="Ex.: aluguel, internet, salário"><div class="entry-two"><div><label>Valor previsto (R$)</label><input class="field" id="xRecAmount" inputmode="decimal"></div><div><label>Categoria</label><select class="field" id="xRecCategory"><option>Casa</option><option>Compras</option><option>Alimentos</option><option>Investimentos</option><option>Saúde</option><option>Projetos</option><option>Metas</option><option>Reserva</option><option>Obra do Reino</option><option>Outros</option></select></div></div><label>Conta / forma de pagamento</label><input class="field" id="xRecAccount" placeholder="Conta, Pix, dinheiro..."><div class="entry-two"><div><label>Frequência</label><select class="field" id="xRecFreq"><option>Semanal</option><option>Quinzenal</option><option>Mensal</option><option>Bimestral</option><option>Trimestral</option><option>Semestral</option><option>Anual</option></select></div><div><label>Primeira data</label><input class="field" id="xRecStart" type="date" value="'+today+'"></div></div><label>Data final (opcional)</label><input class="field" id="xRecEnd" type="date"><div class="entry-note">A regra será salva como programação. Isso não marca contas como pagas nem cria cobranças automaticamente.</div>'+back+'<button class="primary" onclick="saveRecurringRule()">Salvar recorrência</button></div></div>';
  if(type==='allocation')m.innerHTML='<div class="entry-form allocation-premium"><h3>Distribuição do dinheiro</h3><p class="sub">Defina como direcionar o excedente disponível, sem registrar uma nova entrada.</p><label>Excedente disponível (R$)</label><input class="field" id="xAllocAmount" inputmode="decimal" placeholder="Ex.: 1000,00" oninput="previewAllocation()"><label>Forma de distribuição</label><select class="field" id="xAllocMode" onchange="renderAllocationControls();previewAllocation()"><option value="percent">Por percentuais</option><option value="fixed">Por valores fixos</option></select><div id="xAllocControls"></div><div class="entry-impact allocation-summary" id="xAllocPreview">Informe o excedente disponível para calcular.</div>'+back+'<button class="primary" onclick="saveAllocation()">Usar esta configuração como referência</button></div>';renderAllocationControls();
