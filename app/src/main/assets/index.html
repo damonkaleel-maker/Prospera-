@@ -283,7 +283,7 @@ document.addEventListener('click',function(event){
  const card=event.target.closest('#entryCardGrid .entry-card, #entryExtraCards .entry-card');
  if(!card)return;
  const raw=card.getAttribute('onclick')||'';
- const match=raw.match(/showEntryForm\\('([^']+)'\\)/);
+ const match=raw.match(/showEntryForm\('([^']+)'\)/);
  if(!match)return;
  event.preventDefault();event.stopPropagation();
  try{showEntryForm(match[1]);}catch(error){console.error('Falha ao abrir card:',match[1],error);showToast('Não foi possível abrir esta opção. Tente novamente.');}
