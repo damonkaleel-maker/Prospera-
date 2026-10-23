@@ -333,8 +333,17 @@ function saveQuickNote(){
  const text=document.getElementById('enText')?.value.trim();
  const file=document.getElementById('enImage')?.files?.[0];
  if(!text&&!file){showToast('Escreva uma anotação ou selecione uma imagem.');return}
- const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:document.getElementById('enDate').value,text:text||'',imageName:file?.name||'',createdAt:new Date().toISOString()};
- if(saveLocalRecord('prosperaQuickNotes',record)){showToast('Anotação salva neste dispositivo.');backEntryCards()}
+ const save=(imageData='')=>{
+  const record={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:document.getElementById('enDate').value,text:text||'',imageName:file?.name||'',imageData,createdAt:new Date().toISOString()};
+  if(saveLocalRecord('prosperaQuickNotes',record)){showToast('Anotação salva neste dispositivo.');backEntryCards()}
+ };
+ if(file){
+  if(file.size>5*1024*1024){showToast('Escolha uma imagem de até 5 MB.');return}
+  const reader=new FileReader();
+  reader.onload=()=>save(String(reader.result||''));
+  reader.onerror=()=>showToast('Não foi possível ler a imagem selecionada.');
+  reader.readAsDataURL(file);
+ }else save();
 }
 function saveFinancialEntry(){
  const amount=entryNumber('enAmount'),description=document.getElementById('enDescription')?.value.trim();
