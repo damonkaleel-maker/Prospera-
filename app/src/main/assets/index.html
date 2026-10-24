@@ -319,21 +319,26 @@ calculator:[['Calculadora','Operações básicas'],['Aplicar resultado','Somente
 settings:[['Aparência','Tema escuro premium'],['Privacidade','Controles e informações'],['Dados locais','Não apagar dados automaticamente'],['Sobre o aplicativo','Próspera + · Android']]
 };
 function navigate(p){
+ const knownPages=new Set(['dashboard','movements','analytics','applications','new','detail','investments','simulations','payments','projects','allocation','goals','categories','kingdom','openfinance','reports','calculator','settings']);
+ if(!knownPages.has(p)){showToast('Esta área não está disponível nesta versão.');return}
  document.body.classList.toggle('dashboard-mode',p==='dashboard');
- document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
- let el=document.getElementById('page-'+p);
- if(el){el.classList.add('active')}
- else {
-  const d=document.getElementById('page-detail'); d.classList.add('active');
-  const info=labels[p]||['Área','Área em preparação'];
+ document.querySelectorAll('.page').forEach(x=>{x.classList.remove('active');x.removeAttribute('aria-current')});
+ const el=document.getElementById('page-'+p);
+ if(el){el.classList.add('active');el.setAttribute('aria-current','page')}
+ else{
+  const d=document.getElementById('page-detail');
+  if(!d){showToast('Não foi possível abrir esta tela.');return}
+  d.classList.add('active');d.setAttribute('aria-current','page');
+  const info=labels[p];
+  if(!info){showToast('Esta área ainda não foi configurada.');d.classList.remove('active');return}
   document.getElementById('detailTitle').textContent=info[0];
   document.getElementById('detailSub').textContent=info[1];
   const body=d.querySelector('.section');
-  const cards=(templates[p]||[['Área em preparação','Os detalhes serão implementados na etapa funcional.']]).map((x,i)=>'<div class="rowcard"><div class="rowicon">'+(['◈','◎','▦','∿','◇'][i%5])+'</div><div class="rowmain"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div><span style="color:var(--muted)">›</span></div>').join('');
-  body.innerHTML=cards+'<div class="emptyhint">Estrutura visual demonstrativa. Nenhuma informação financeira real foi importada. As funções serão implementadas e testadas por módulo; Open Finance fica para o final.</div><button class="primary" onclick="showToast(\'Esta função será ativada na etapa de implementação funcional.\')">Adicionar / configurar</button>';
+  const cards=(templates[p]||[]).map((x,i)=>'<div class="rowcard"><div class="rowicon">'+(['◈','◎','▦','∿','◇'][i%5])+'</div><div class="rowmain"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div></div>').join('');
+  body.innerHTML=cards+'<div class="emptyhint"><strong>Módulo em implementação.</strong><br>Esta tela ainda não executa todas as operações descritas. Não há importação bancária nem dados financeiros reais nesta área. As funções serão ativadas e testadas por módulo; Open Finance ficará para a última etapa.</div><button class="primary" onclick="navigate(\'applications\')">Voltar às aplicações</button>';
  }
- document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
- window.scrollTo(0,0)
+ document.querySelectorAll('.nav button').forEach(b=>{const active=b.dataset.page===p;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ window.scrollTo({top:0,behavior:'auto'});
 }
 function showToast(t){let e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display='none',2800)}
 let hiddenBalance=false;function toggleBalance(){hiddenBalance=!hiddenBalance;document.getElementById('balanceAmount').textContent=hiddenBalance?'••••••••':'R$ 12.845,90'}
