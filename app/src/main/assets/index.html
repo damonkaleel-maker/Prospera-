@@ -575,10 +575,11 @@ function calculatePurchase(){
  let futurePrice=null, futureRealValue=null;
  if(waitMonths===0){waitScore=45;waitNote='Prazo de espera igual a zero: nenhum adiamento foi simulado.'}
  else if(purchaseIpcaRate!==null&&Number.isFinite(purchaseIpcaRate)){
-   const monthlyInflation=Math.pow(1+purchaseIpcaRate/100,1);
+   const monthlyInflation=1+purchaseIpcaRate/100;
    futurePrice=cashTotal*Math.pow(monthlyInflation,waitMonths);
-   futureRealValue=futurePrice/Math.pow(1+yieldRate,waitMonths);
-   const waitAdvantage=(cashTotal-futureRealValue)/Math.max(cashTotal,1);
+   const futureMoneyValue=cashTotal*Math.pow(1+yieldRate,waitMonths);
+   futureRealValue=cashTotal/Math.pow(monthlyInflation,waitMonths);
+   const waitAdvantage=(futureMoneyValue-futurePrice)/Math.max(cashTotal,1);
    waitScore=50+Math.max(-1,Math.min(1,waitAdvantage))*35;
    waitNote='Cenário ilustrativo para '+waitMonths+' meses usando o último IPCA mensal ('+purchasePercent(purchaseIpcaRate)+', referência '+purchaseIpcaPeriod+') como hipótese constante; não é previsão.';
  }
@@ -601,7 +602,7 @@ function calculatePurchase(){
  if(advanced&&monthsReserve>0)parts.push('<div class="purchase-metric"><span>Meses de despesas cobertos informados</span><b>'+monthsReserve.toLocaleString('pt-BR')+' meses</b></div>');
  if(purchaseIpcaRate!==null&&Number.isFinite(purchaseIpcaRate)){
    parts.push('<div class="purchase-metric"><span>Poder de compra equivalente de '+purchaseMoney(cashTotal)+' após '+waitMonths+' meses (IPCA constante)</span><b>'+(futureRealValue===null?'—':purchaseMoney(cashTotal/Math.pow(1+purchaseIpcaRate/100,waitMonths)))+'</b></div>');
-   if(futurePrice!==null)parts.push('<div class="purchase-metric"><span>Preço futuro estimado do produto</span><b>'+purchaseMoney(futurePrice)+'</b></div>');
+   if(futurePrice!==null){parts.push('<div class="purchase-metric"><span>Preço futuro estimado do produto</span><b>'+purchaseMoney(futurePrice)+'</b></div>');parts.push('<div class="purchase-metric"><span>Valor futuro do dinheiro mantido investido</span><b>'+purchaseMoney(cashTotal*Math.pow(1+yieldRate,waitMonths))+'</b></div>');}
  }
  const ipca=purchaseIpcaRate===null?'IPCA ainda não consultado':'Último IPCA mensal oficial: '+purchasePercent(purchaseIpcaRate)+' ('+purchaseIpcaPeriod+'). É dado passado, não previsão.';
  result.innerHTML='<strong>'+recommendation+'</strong><small>Notas de 0 a 100 são indicadores comparativos desta simulação, não garantias nem aconselhamento financeiro. A pontuação depende dos dados informados; na modalidade avançada considera renda e reserva.</small>'+ratings+parts.join('')+'<small>'+waitNote+'</small><small>'+ipca+'</small><small>Valor presente = entrada + custos extras + parcelas descontadas pelo rendimento líquido mensal informado. Pressupõe parcelas mensais iguais, com a primeira em um mês. A estimativa de espera mantém o IPCA mensal constante apenas como cenário ilustrativo.</small>';
