@@ -1,0 +1,63 @@
+name: 🚨 Quality Gate — Próspera +
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feat/analise-compra-completa]
+    paths:
+      - 'app/**'
+      - 'scripts/**'
+      - '*.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - '.github/workflows/quality-gate.yml'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  javascript-syntax:
+    name: Validate inline JavaScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate embedded JavaScript syntax
+        run: python3 scripts/validate-inline-js.py
+
+  android-build:
+    name: Compile Android debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Android SDK and accept licenses
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Compile APK
+        run: gradle --no-daemon --stacktrace assembleDebug
+      - name: Verify APK exists and is non-empty
+        run: test -s app/build/outputs/apk/debug/app-debug.apk
