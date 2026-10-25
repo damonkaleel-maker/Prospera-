@@ -678,7 +678,7 @@ function renderPurchaseHistory(){
 }
 function loadPurchaseSimulation(id){
  const r=getPurchaseHistory().find(x=>String(x.id)===String(id));if(!r){showToast('Simulação não encontrada.');return}
- if(r.inputs&&typeof r.inputs==='object')Object.entries(r.inputs).forEach(([key,value])=>{const el=document.getElementById(key);if(el)el.value=value});
+ if(r.inputs&&typeof r.inputs==='object')Object.entries(r.inputs).forEach(([key,value])=>{const el=document.getElementById(key);if(el)el.value=value});else{const legacy={pcCash:r.cashPrice,pcInstallment:r.installmentAmount,pcCount:r.installmentCount,pcYield:r.netMonthlyYieldPercent,pcDown:r.downPayment,pcCashFees:r.cashExtraCosts,pcInstallFees:r.installmentExtraCosts};Object.entries(legacy).forEach(([key,value])=>{const el=document.getElementById(key);if(el&&value!==undefined&&value!==null)el.value=value})}
  setPurchaseMode(r.mode||'simple');purchaseIpcaRate=Number.isFinite(Number(r.ipcaMonthlyRate))&&r.ipcaMonthlyRate!==null?Number(r.ipcaMonthlyRate):null;purchaseIpcaPeriod=r.ipcaPeriod||'';
  calculatePurchase();showToast('Simulação carregada. Confira se os dados continuam atuais.');
 }
