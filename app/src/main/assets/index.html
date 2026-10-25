@@ -625,17 +625,23 @@ function calculateInvestmentScenario(){
  out.innerHTML='<strong>Confira os dados da simulação.</strong><small>Use valores não negativos, rendimento mensal de até 100% e uma quantidade válida de parcelas.</small>';return;
  }
  if(installment<=0||cash<=0){out.innerHTML='<strong>Informe o preço à vista e o valor da parcela.</strong><small>O saldo inicial usa o preço à vista quando o campo de investimento fica vazio.</small>';return;}
- let balance=initial, depletedAt=0, totalContributed=initial, totalWithdrawn=0;
+ let balance=initial, depletedAt=0, totalContributed=initial, totalWithdrawn=0, shortfall=0;
  for(let m=1;m<=count;m++){
    balance*=1+rate;
    if(extra>0){balance+=extra;totalContributed+=extra}
    const due=installment+(purchaseMode==='advanced'&&m===1?purchaseNumber('pcInstallFees'):0);
-   if(balance+1e-8<due){depletedAt=m;totalWithdrawn+=Math.max(0,balance);balance=0;break}
+   if(balance+1e-8<due){
+     depletedAt=m;
+     shortfall=Math.max(0,due-balance);
+     // A parcela não foi paga: não registrar o saldo restante como retirada.
+     // Preservar o dinheiro que ainda existe e reportar a diferença não coberta.
+     break;
+   }
    balance-=due;totalWithdrawn+=due;
  }
  const full=depletedAt===0;
- const status=full?(balance>0.005?'Saldo positivo ao final':'Saldo praticamente zerado'):'O saldo não cobre integralmente a parcela do mês '+depletedAt;
- out.innerHTML='<strong>'+status+'</strong><div class="purchase-metric"><span>Saldo inicial</span><b>'+purchaseMoney(initial)+'</b></div><div class="purchase-metric"><span>Rendimento líquido mensal assumido</span><b>'+purchasePercent(rate*100)+'</b></div><div class="purchase-metric"><span>Parcelas integralmente pagas no cenário</span><b>'+ (full?count:depletedAt-1) +' de '+count+'</b></div><div class="purchase-metric"><span>Saldo final estimado</span><b>'+purchaseMoney(balance)+'</b></div><div class="purchase-metric"><span>Aportes adicionais no período</span><b>'+purchaseMoney(totalContributed-initial)+'</b></div><div class="purchase-metric"><span>Total retirado do investimento</span><b>'+purchaseMoney(totalWithdrawn)+'</b></div><small>Premissa: rendimento mensal aplicado antes de cada retirada; aporte adicional no início de cada mês. Não inclui impostos ou taxas além do rendimento líquido informado. Quando o saldo não cobre uma parcela, a simulação encerra as retiradas e informa o mês da insuficiência.</small>';
+ const status=full?(balance>0.005?'Saldo positivo ao final':'Saldo praticamente zerado'):'Saldo insuficiente no mês '+depletedAt+'; a parcela não foi paga integralmente';
+ out.innerHTML='<strong>'+status+'</strong><div class="purchase-metric"><span>Saldo inicial</span><b>'+purchaseMoney(initial)+'</b></div><div class="purchase-metric"><span>Rendimento líquido mensal assumido</span><b>'+purchasePercent(rate*100)+'</b></div><div class="purchase-metric"><span>Parcelas integralmente pagas no cenário</span><b>'+ (full?count:depletedAt-1) +' de '+count+'</b></div>'+(full?'<div class="purchase-metric"><span>Saldo final estimado</span><b>'+purchaseMoney(balance)+'</b></div>':'<div class="purchase-metric"><span>Saldo que permaneceu no investimento no mês da insuficiência</span><b>'+purchaseMoney(balance)+'</b></div><div class="purchase-metric"><span>Valor da parcela que ficou descoberto</span><b>'+purchaseMoney(shortfall)+'</b></div>')+'<div class="purchase-metric"><span>Aportes adicionais no período</span><b>'+purchaseMoney(totalContributed-initial)+'</b></div><div class="purchase-metric"><span>Total efetivamente retirado para parcelas pagas</span><b>'+purchaseMoney(totalWithdrawn)+'</b></div><small>Premissa: rendimento mensal aplicado antes de cada retirada; aporte adicional no início de cada mês. Não inclui impostos ou taxas além do rendimento líquido informado. Se o saldo não cobre integralmente a parcela, ela é marcada como não paga, o saldo restante é preservado no relatório e somente parcelas integralmente cobertas entram no total retirado.</small>';
 }
 function exportPurchaseCsv(){
  const ids=['pcCash','pcInstallment','pcCount','pcYield','pcWaitMonths','pcDown','pcCashFees','pcInstallFees','pcIncome','pcReserve','pcMonthsReserve','pcInvestmentStart','pcInvestmentExtra'];
