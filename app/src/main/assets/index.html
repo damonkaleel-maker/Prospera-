@@ -219,6 +219,7 @@ body.dashboard-mode{overscroll-behavior-y:auto}
 .purchase-investment .sectitle{margin:0 0 8px}.purchase-investment p{line-height:1.5}
 @media print{body{background:#fff!important;color:#111!important;padding:0!important}.nav,.top,.purchase-actions,.purchase-tabs,.purchase-refresh{display:none!important}.app{max-width:none!important}.page{display:none!important}#page-analytics{display:block!important}.purchase-tool,.purchase-result,.purchase-investment{background:#fff!important;color:#111!important;border-color:#bbb!important;break-inside:avoid}.purchase-result small,.sub,.purchase-grid label{color:#333!important}}
 .purchase-tool{border:1px solid #3a3b42;background:linear-gradient(160deg,#151e2f,#0f1725);border-radius:18px;padding:15px}
+.purchase-history{margin-top:16px;padding-top:12px;border-top:1px solid #343b49}.purchase-history-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #343b49}.purchase-history-item>div:first-child{min-width:0}.purchase-history-item strong,.purchase-history-item small{display:block}.purchase-history-item small{margin-top:4px}.purchase-history-item .purchase-actions{margin:0;gap:6px}.purchase-history-item .purchase-secondary{padding:7px 10px}@media(max-width:520px){.purchase-history-item{align-items:flex-start;flex-direction:column}.purchase-history-item .purchase-actions{width:100%}}
 .purchase-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
 .purchase-tab,.purchase-secondary,.purchase-refresh{border:1px solid var(--line);border-radius:12px;padding:11px;background:#111a2b;color:var(--text);font-weight:700}
 .purchase-tab.active{border-color:var(--gold);background:#d9b66d18;color:#f4d58c}
@@ -685,4 +686,5 @@ function deletePurchaseSimulation(id){
  const records=getPurchaseHistory().filter(x=>String(x.id)!==String(id));
  try{localStorage.setItem('prosperaPurchaseSimulations',JSON.stringify(records));renderPurchaseHistory();showToast('Simulação removida do histórico local.')}catch(e){showToast('Não foi possível atualizar o histórico.')}
 }
+renderPurchaseHistory();
 </script></body></html>
